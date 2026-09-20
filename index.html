@@ -446,7 +446,136 @@
         </ul>
       </div>
     </section>
+<!-- REVIEWS -->
+    <style>
+      .reviews { background: var(--cream); color: var(--red); padding-block: clamp(3.5rem, 8vw, 6rem); }
+      .reviews-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
+      .reviews h2 { font-size: var(--step-2); }
+      .reviews-arrows { display: flex; gap: .6rem; flex: none; }
+      .rev-btn {
+        width: 2.9rem; height: 2.9rem; padding: 0; border-radius: 50%;
+        border: 2px solid var(--red); background: transparent; color: var(--red);
+        display: grid; place-items: center; cursor: pointer;
+      }
+      .rev-btn svg { width: 1.4rem; height: 1.4rem; }
+      .rev-btn:hover:not(:disabled) { background: rgba(138,43,43,.12); }
+      .rev-btn:disabled { opacity: .35; cursor: not-allowed; }
+      .rev-btn:focus-visible, .reviews-track:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
 
+      .reviews-track {
+        --gap: 1.25rem;
+        display: flex; gap: var(--gap);
+        overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+        scrollbar-width: none;
+      }
+      .reviews-track::-webkit-scrollbar { display: none; }
+
+      .review {
+        flex: 0 0 calc((100% - 2 * var(--gap)) / 3); scroll-snap-align: start;   /* 3 columns */
+        margin: 0; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+        border: 2px solid rgba(138,43,43,.35); border-radius: 20px; background: rgba(255,255,255,.4);
+      }
+      @media (max-width: 900px) { .review { flex-basis: calc((100% - var(--gap)) / 2); } }   /* 2 columns */
+      @media (max-width: 600px) { .review { flex-basis: 100%; } }                            /* 1 column  */
+
+      .review-stars { font-size: 1.35rem; letter-spacing: .1em; line-height: 1; color: var(--yellow); -webkit-text-stroke: 1px var(--red); }
+      .review blockquote { margin: 0; font-size: 1.05rem; line-height: 1.6; }
+      .review figcaption { margin-top: auto; font-weight: 600; }
+      .review figcaption span { display: block; font-weight: 400; font-size: .9rem; }
+
+      .reviews-links { max-width: none; margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: .5rem 1.75rem; }
+      .reviews-links a { font-weight: 600; text-underline-offset: 5px; }
+
+      @media (prefers-reduced-motion: reduce) { .reviews-track { scroll-behavior: auto; } }
+    </style>
+
+    <section class="reviews" id="reviews">
+      <div class="wrap">
+        <div class="reviews-head">
+          <h2>What our customers say</h2>
+          <div class="reviews-arrows">
+            <button type="button" class="rev-btn" id="rev-prev" aria-label="Previous reviews">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <button type="button" class="rev-btn" id="rev-next" aria-label="Next reviews">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Each <figure> below is one review. To edit: change the stars, the text and the name.
+             5 stars = ★★★★★   4 stars = ★★★★☆   (also change the number in aria-label).
+             To add a review, copy a whole <figure> ... </figure> block. To remove one, delete it. -->
+        <div class="reviews-track" id="reviews-track" tabindex="0" role="region" aria-label="Customer reviews">
+          <figure class="review">
+            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+            <figcaption>Customer name <span>Google review</span></figcaption>
+          </figure>
+
+          <figure class="review">
+            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+            <figcaption>Customer name <span>Google review</span></figcaption>
+          </figure>
+
+          <figure class="review">
+            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+            <figcaption>Customer name <span>Google review</span></figcaption>
+          </figure>
+
+          <figure class="review">
+            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+            <figcaption>Customer name <span>Google review</span></figcaption>
+          </figure>
+
+          <figure class="review">
+            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+            <figcaption>Customer name <span>Google review</span></figcaption>
+          </figure>
+
+          <figure class="review">
+            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+            <figcaption>Customer name <span>Google review</span></figcaption>
+          </figure>
+        </div>
+
+        <p class="reviews-links">
+          <a href="https://search.google.com/local/reviews?placeid=ChIJq5XPSDF9pjsRSVRfOaS9WjA" target="_blank" rel="noopener">See all reviews on Google</a>
+          <a href="https://search.google.com/local/writereview?placeid=ChIJq5XPSDF9pjsRSVRfOaS9WjA" target="_blank" rel="noopener">Write a review</a>
+        </p>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        var track = document.getElementById('reviews-track');
+        var prev  = document.getElementById('rev-prev');
+        var next  = document.getElementById('rev-next');
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function step() {                       // width of one card plus the gap
+          var card = track.querySelector('.review');
+          var gap  = parseFloat(getComputedStyle(track).columnGap) || 0;
+          return card ? card.getBoundingClientRect().width + gap : track.clientWidth;
+        }
+        function go(dir) { track.scrollBy({ left: dir * step(), behavior: reduce ? 'auto' : 'smooth' }); }
+        function sync() {                       // grey out an arrow when there is nothing more to show
+          prev.disabled = track.scrollLeft <= 2;
+          next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+        }
+
+        prev.addEventListener('click', function () { go(-1); });
+        next.addEventListener('click', function () { go(1); });
+        track.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('resize', sync);
+        sync();
+      })();
+    </script>
 <!-- CONTACT -->
     <style>
       .contact-list { margin: 2.5rem 0 0; display: flex; flex-wrap: wrap; gap: 1.25rem 3.5rem; }
