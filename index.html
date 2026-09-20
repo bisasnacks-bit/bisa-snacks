@@ -350,10 +350,60 @@
   </div>
 </div>
 
-<a class="btn btn-primary" id="order-btn" href="#kozhiada">Order Kozhiada</a>
+<style>
+    /* Delivery details form */
+    .order-form { margin-top: 1.75rem; padding-top: 1.75rem; border-top: 1px solid rgba(138,43,43,.35); max-width: 36rem; }
+    .form-title { font-size: 1.4rem; margin-bottom: 1.25rem; }
+    .order-form .field { margin-bottom: 1.1rem; }
+    .order-form label { display: block; margin-bottom: .4rem; font-weight: 600; }
+    .order-form .optional { font-weight: 400; opacity: .8; }
+    .order-form input, .order-form textarea {
+      display: block; width: 100%; padding: .75rem 1rem;
+      font: inherit; color: var(--red);
+      background: rgba(255,255,255,.5); border: 2px solid var(--red); border-radius: 12px;
+    }
+    .order-form textarea { resize: vertical; min-height: 4.5rem; }
+    .order-form ::placeholder { color: var(--red); opacity: .65; }
+    .order-form input:focus-visible, .order-form textarea:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+    button.order-submit { display: block; width: 100%; margin-top: 1.5rem; font: inherit; font-weight: 600; cursor: pointer; }
+    .order-note { margin-top: .9rem; font-size: .95rem; }
+
+    /* keep the photo at the top and let it follow while the form is scrolled (wide screens only) */
+    @media (min-width: 900px) {
+      .snack-grid { align-items: start; }
+      .snack-grid .photo { position: sticky; top: 2rem; }
+    }
+</style>
+
+<form class="order-form" id="order-form">
+  <h3 class="form-title">Delivery details</h3>
+
+  <div class="field">
+    <label for="f-name">Name</label>
+    <input id="f-name" name="name" type="text" autocomplete="name" maxlength="60" required>
+  </div>
+
+  <div class="field">
+    <label for="f-phone">Contact number</label>
+    <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="e.g. 98765 43210" required>
+  </div>
+
+  <div class="field">
+    <label for="f-address">Delivery address</label>
+    <textarea id="f-address" name="address" rows="3" maxlength="300" autocomplete="street-address" placeholder="House name or number, street, area, town, pin code" required></textarea>
+  </div>
+
+  <div class="field">
+    <label for="f-remarks">Remarks <span class="optional">(optional)</span></label>
+    <textarea id="f-remarks" name="remarks" rows="2" maxlength="300" placeholder="Anything we should know?"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary order-submit">Order on WhatsApp</button>
+  <p class="order-note" id="order-note" role="status">This opens WhatsApp with your order ready to send. Nothing is sent until you press send there.</p>
+</form>
 
 <script>
-    /* Pack size + quantity -> price, and the WhatsApp order button */
+    /* Pack size + quantity -> price, and the WhatsApp order form */
     (function () {
       /* ===== YOUR WHATSAPP NUMBER =====
          Country code + number, digits only: no +, no spaces, no dashes.
@@ -366,22 +416,14 @@
       var plus  = document.getElementById('qty-plus');
       var total = document.getElementById('total');
       var note  = document.getElementById('total-note');
-      var orderBtn  = document.getElementById('order-btn');
-      var orderLink = document.querySelector('#order a[href^="https://wa.me/"]');   // WhatsApp button in the Order section
+      var form  = document.getElementById('order-form');
+      var phone = document.getElementById('f-phone');
+      var status = document.getElementById('order-note');
+      var statusDefault = status.textContent;
       var MIN = parseInt(qty.min, 10) || 1;
       var MAX = parseInt(qty.max, 10) || 20;
-
       var number = WHATSAPP_NUMBER.replace(/\D/g, '');
-      var ready  = /^\d{8,15}$/.test(number);          // false until a real number is entered
-      var waBase = 'https://wa.me/' + number + '?text=';
-
-      if (ready) {
-        orderBtn.target = '_blank';
-        orderBtn.rel = 'noopener';
-        if (orderLink) orderLink.href = waBase + encodeURIComponent("Hi BISA, I'd like to order Kozhiada.");
-      } else if (window.console) {
-        console.warn('BISA: add your WhatsApp number at WHATSAPP_NUMBER so the order button opens WhatsApp.');
-      }
+      var cur = { size: '200', q: 1, price: 249, sum: 249 };          // what is currently selected
 
       function rupees(n) { return '\u20B9' + n.toLocaleString('en-IN'); }
 
@@ -399,14 +441,7 @@
         note.textContent  = q + (q === 1 ? ' pack' : ' packs') + ' of ' + size.value + ' gm';
         minus.disabled = q <= MIN;
         plus.disabled  = q >= MAX;
-
-        if (ready) {                           // message that opens in the WhatsApp chat box
-          var message = "Hi BISA, I'd like to order Kozhiada.\n\n" +
-                        'Pack size: ' + size.value + ' gm\n' +
-                        'Quantity: ' + q + (q === 1 ? ' pack' : ' packs') + '\n' +
-                        'Total: ' + rupees(price * q);
-          orderBtn.href = waBase + encodeURIComponent(message);
-        }
+        cur = { size: size.value, q: q, price: price, sum: price * q };
       }
 
       minus.addEventListener('click', function () { qty.value = clamp(parseInt(qty.value, 10) - 1); update(true); });
@@ -416,9 +451,53 @@
       document.querySelectorAll('input[name="size"]').forEach(function (r) {
         r.addEventListener('change', function () { update(true); });
       });
-      orderBtn.addEventListener('click', function () { update(true); });   // make sure the message is current
-
       update(true);
+
+      /* ---------- Order form -> WhatsApp ---------- */
+      function val(id) { return document.getElementById(id).value.trim(); }
+
+      function checkPhone() {                  // at least 10 digits, only digits, spaces, + - ( )
+        var digits = phone.value.replace(/\D/g, '');
+        var ok = /^[+\d\s\-()]+$/.test(phone.value) && digits.length >= 10 && digits.length <= 13;
+        phone.setCustomValidity(ok ? '' : 'Please enter a valid contact number (at least 10 digits).');
+      }
+      phone.addEventListener('input', function () { checkPhone(); status.textContent = statusDefault; });
+      checkPhone();
+
+      function buildMessage() {
+        update(true);                          // make sure size, quantity and price are current
+        var lines = [
+          "Hi BISA, I'd like to place an order.",
+          '',
+          '*Order*',
+          'Product: Kozhiada',
+          'Pack size: ' + cur.size + ' gm',
+          'Quantity: ' + cur.q + (cur.q === 1 ? ' pack' : ' packs'),
+          'Price per pack: ' + rupees(cur.price),
+          'Total: ' + rupees(cur.sum),
+          '',
+          '*Delivery details*',
+          'Name: ' + val('f-name'),
+          'Contact number: ' + val('f-phone'),
+          'Address: ' + val('f-address')
+        ];
+        var remarks = val('f-remarks');
+        if (remarks) lines.push('Remarks: ' + remarks);
+        return lines.join('\n');
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();                    // only runs when every required box is filled in correctly
+        if (!/^\d{8,15}$/.test(number)) { if (window.console) console.warn('BISA: check WHATSAPP_NUMBER.'); return; }
+        var link = document.createElement('a');
+        link.href = 'https://wa.me/' + number + '?text=' + encodeURIComponent(buildMessage());
+        link.target = '_blank';
+        link.rel = 'noopener';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        status.textContent = 'WhatsApp should now be open with your order ready. Press send there to place it.';
+      });
     })();
 </script>
         </div>
