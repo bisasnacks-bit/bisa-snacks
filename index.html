@@ -265,42 +265,12 @@
           <h2>Kozhiada</h2>
           <p>A Malabar snack, made to the original recipe.</p>
 
-  <div class="picker">
-            <div class="row">
-              <span class="label" id="size-label">Pack size</span>
-              <div class="sizes" role="radiogroup" aria-labelledby="size-label">
-                <label class="chip">
-                  <input type="radio" name="size" value="200" checked>
-                  <span>200 gm</span>
-                </label>
-                <label class="chip">
-                  <input type="radio" name="size" value="400">
-                  <span>400 gm</span>
-                </label>
-              </div>
-            </div>
- 
-            <div class="row">
-              <span class="label" id="qty-label">Quantity</span>
-              <div class="qty" role="group" aria-labelledby="qty-label">
-                <button type="button" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
-                <output id="qty-value" for="qty-minus qty-plus">1</output>
-                <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
-              </div>
-            </div>
- 
-            <div class="row price-row">
-              <span class="label">Price</span>
-              <div class="price-total" aria-live="polite" aria-atomic="true">
-                <strong id="price-total">₹249</strong>
-                <small id="price-note">1 pack of 200 gm</small>
-              </div>
-            </div>
-          </div>
- 
-          <a class="btn btn-primary" href="#order">Order Kozhiada</a>
-        </div>
-      </div>
+ <style>
+    /* Pack size, quantity and live price */
+    .picker { margin: 1.75rem 0 2rem; display: grid; gap: 1.5rem; max-width: 26rem; }
+    .picker fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .picker legend, .picker-label { display: block; font-weight: 600; padding: 0; margin-bottom: .6rem; }
+
     .sizes { display: flex; flex-wrap: wrap; gap: .75rem; }
     .sizes input { position: absolute; opacity: 0; width: 1px; height: 1px; }
     .sizes label {
