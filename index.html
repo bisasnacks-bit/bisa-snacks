@@ -501,10 +501,33 @@
     </section>
   </main>
 
+  <style>
+    .footer-inner { width: 100%; max-width: var(--wrap); margin-inline: auto; padding: 2.75rem var(--pad) 1.75rem; }
+    .footer-top { display: grid; gap: 2.5rem; }
+    @media (min-width: 800px) { .footer-top { grid-template-columns: auto 1fr; gap: 3.5rem; align-items: start; } }
+    .footer-heading { font-size: 1.3rem; color: var(--yellow); margin-bottom: .75rem; }
+    .footer-address { font-style: normal; font-size: 1rem; line-height: 1.7; }
+    .footer-map { display: inline-block; margin-top: .75rem; font-weight: 600; text-underline-offset: 5px; }
+    .footer-bottom { max-width: none; margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(241,230,178,.25); font-size: .9rem; }
+  </style>
+
   <footer class="site-footer">
-    <div class="wrap">
-      <img class="footer-logo" src="logo.png" alt="BISA Snacks. For my children." width="1000" height="832">
-      <span>&copy; <span id="year">2026</span> BISA Snacks</span>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <img class="footer-logo" src="logo.png" alt="BISA Snacks. For my children." width="1000" height="832">
+
+        <div>
+          <h3 class="footer-heading">Find us</h3>
+          <address class="footer-address">
+            BISA Snacks<br>
+            Nadukkandiyil, Moorikuthi<br>
+            Keralam 673532, India
+          </address>
+          <a class="footer-map" href="https://www.google.com/maps/search/?api=1&amp;query=BISA%20Snacks&amp;query_place_id=ChIJq5XPSDF9pjsRSVRfOaS9WjA" target="_blank" rel="noopener">View on Google Maps</a>
+        </div>
+      </div>
+
+      <p class="footer-bottom">&copy; <span id="year">2026</span> BISA Snacks. For my children.</p>
     </div>
   </footer>
 
