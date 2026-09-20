@@ -265,7 +265,7 @@
           <h2>Kozhiada</h2>
           <p>A Malabar snack, made to the original recipe.</p>
 
-          <style>
+         <style>
     /* Pack size, quantity and price */
     .picker { margin: 1.75rem 0 2rem; max-width: 36rem; }
     .picker .row {
@@ -349,16 +349,38 @@
   </div>
 </div>
 
+<a class="btn btn-primary" id="order-btn" href="#order">Order Kozhiada</a>
+
 <script>
-    /* Pack size + quantity -> price */
+    /* Pack size + quantity -> price, and the WhatsApp order button */
     (function () {
+      /* ===== YOUR WHATSAPP NUMBER =====
+         Country code + number, digits only: no +, no spaces, no dashes.
+         Example for an Indian number: 919876543210 */
+      var WHATSAPP_NUMBER = '91XXXXXXXXXX';
+      /* ================================= */
+
       var qty   = document.getElementById('qty');
       var minus = document.getElementById('qty-minus');
       var plus  = document.getElementById('qty-plus');
       var total = document.getElementById('total');
       var note  = document.getElementById('total-note');
+      var orderBtn  = document.getElementById('order-btn');
+      var orderLink = document.querySelector('#order a[href^="https://wa.me/"]');   // WhatsApp button in the Order section
       var MIN = parseInt(qty.min, 10) || 1;
       var MAX = parseInt(qty.max, 10) || 20;
+
+      var number = WHATSAPP_NUMBER.replace(/\D/g, '');
+      var ready  = /^\d{8,15}$/.test(number);          // false until a real number is entered
+      var waBase = 'https://wa.me/' + number + '?text=';
+
+      if (ready) {
+        orderBtn.target = '_blank';
+        orderBtn.rel = 'noopener';
+        if (orderLink) orderLink.href = waBase + encodeURIComponent("Hi BISA, I'd like to order Kozhiada.");
+      } else if (window.console) {
+        console.warn('BISA: add your WhatsApp number at WHATSAPP_NUMBER so the order button opens WhatsApp.');
+      }
 
       function rupees(n) { return '\u20B9' + n.toLocaleString('en-IN'); }
 
@@ -376,6 +398,14 @@
         note.textContent  = q + (q === 1 ? ' pack' : ' packs') + ' of ' + size.value + ' gm';
         minus.disabled = q <= MIN;
         plus.disabled  = q >= MAX;
+
+        if (ready) {                           // message that opens in the WhatsApp chat box
+          var message = "Hi BISA, I'd like to order Kozhiada.\n\n" +
+                        'Pack size: ' + size.value + ' gm\n' +
+                        'Quantity: ' + q + (q === 1 ? ' pack' : ' packs') + '\n' +
+                        'Total: ' + rupees(price * q);
+          orderBtn.href = waBase + encodeURIComponent(message);
+        }
       }
 
       minus.addEventListener('click', function () { qty.value = clamp(parseInt(qty.value, 10) - 1); update(true); });
@@ -385,15 +415,11 @@
       document.querySelectorAll('input[name="size"]').forEach(function (r) {
         r.addEventListener('change', function () { update(true); });
       });
+      orderBtn.addEventListener('click', function () { update(true); });   // make sure the message is current
 
       update(true);
     })();
 </script>
-<a class="btn btn-primary" href="#order">Order Kozhiada</a>
-        </div>
-      </div>
-      <!-- To add more snacks later, duplicate this whole <section> and change the text and photo. -->
-    </section>
 
     <!-- PROMISE -->
     <section class="promise" id="promise">
