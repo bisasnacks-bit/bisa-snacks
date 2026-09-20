@@ -449,99 +449,96 @@
 <!-- REVIEWS -->
     <style>
       .reviews { background: var(--cream); color: var(--red); padding-block: clamp(3.5rem, 8vw, 6rem); }
-      .reviews-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
-      .reviews h2 { font-size: var(--step-2); }
-      .reviews-arrows { display: flex; gap: .6rem; flex: none; }
-      .rev-btn {
-        width: 2.9rem; height: 2.9rem; padding: 0; border-radius: 50%;
-        border: 2px solid var(--red); background: transparent; color: var(--red);
-        display: grid; place-items: center; cursor: pointer;
-      }
-      .rev-btn svg { width: 1.4rem; height: 1.4rem; }
-      .rev-btn:hover:not(:disabled) { background: rgba(138,43,43,.12); }
-      .rev-btn:disabled { opacity: .35; cursor: not-allowed; }
-      .rev-btn:focus-visible, .reviews-track:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
+      .reviews h2 { font-size: var(--step-2); text-align: center; margin-bottom: 2rem; }
 
-      .reviews-track {
-        --gap: 1.25rem;
-        display: flex; gap: var(--gap);
-        overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
-        scrollbar-width: none;
-      }
-      .reviews-track::-webkit-scrollbar { display: none; }
+      .reviews-slider { max-width: 46rem; margin-inline: auto; }
+      .reviews-viewport { overflow: hidden; }
+      .reviews-track { --gap: 1.25rem; display: flex; gap: var(--gap); }
+      .reviews-slider:not(.is-ready) .reviews-track { flex-direction: column; }   /* without JavaScript: reviews simply stack */
 
       .review {
-        flex: 0 0 calc((100% - 2 * var(--gap)) / 3); scroll-snap-align: start;   /* 3 columns */
-        margin: 0; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+        flex: 0 0 100%; margin: 0; padding: 2rem 1.75rem;
+        display: flex; flex-direction: column; align-items: center; gap: 1.1rem; text-align: center;
         border: 2px solid rgba(138,43,43,.35); border-radius: 20px; background: rgba(255,255,255,.4);
       }
-      @media (max-width: 900px) { .review { flex-basis: calc((100% - var(--gap)) / 2); } }   /* 2 columns */
-      @media (max-width: 600px) { .review { flex-basis: 100%; } }                            /* 1 column  */
-
-      .review-stars { font-size: 1.35rem; letter-spacing: .1em; line-height: 1; color: var(--yellow); -webkit-text-stroke: 1px var(--red); }
-      .review blockquote { margin: 0; font-size: 1.05rem; line-height: 1.6; }
+      .review-stars { font-size: 1.5rem; letter-spacing: .1em; line-height: 1; color: var(--yellow); -webkit-text-stroke: 1px var(--red); }
+      .review blockquote { margin: 0; font-size: var(--step-1); line-height: 1.5; }
       .review figcaption { margin-top: auto; font-weight: 600; }
       .review figcaption span { display: block; font-weight: 400; font-size: .9rem; }
 
-      .reviews-links { max-width: none; margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: .5rem 1.75rem; }
-      .reviews-links a { font-weight: 600; text-underline-offset: 5px; }
+      .reviews-controls { display: none; align-items: center; justify-content: center; gap: .75rem; margin-top: 1.5rem; }
+      .reviews-slider.is-ready .reviews-controls { display: flex; }
+      .reviews-slider.is-single .reviews-controls { display: none; }
+      .rev-btn {
+        width: 2.75rem; height: 2.75rem; padding: 0; border-radius: 50%;
+        border: 2px solid var(--red); background: transparent; color: var(--red);
+        display: grid; place-items: center; cursor: pointer;
+      }
+      .rev-btn svg { width: 1.3rem; height: 1.3rem; }
+      .rev-btn:hover { background: rgba(138,43,43,.12); }
+      .rev-btn:focus-visible, .rev-dot:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
+      .rev-pause { margin-left: .5rem; }
+      .rev-pause .icon-play, .rev-pause.is-paused .icon-pause { display: none; }
+      .rev-pause.is-paused .icon-play { display: block; }
 
-      @media (prefers-reduced-motion: reduce) { .reviews-track { scroll-behavior: auto; } }
+      .rev-dots { display: flex; }
+      .rev-dot { width: 1.5rem; height: 1.5rem; padding: 0; border: 0; background: none; display: grid; place-items: center; cursor: pointer; }
+      .rev-dot::before { content: ""; width: .7rem; height: .7rem; border-radius: 50%; border: 2px solid var(--red); }
+      .rev-dot[aria-current="true"]::before { background: var(--red); }
+
+      .reviews-links { max-width: none; margin-top: 1.75rem; display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem 1.75rem; }
+      .reviews-links a { font-weight: 600; text-underline-offset: 5px; }
     </style>
 
     <section class="reviews" id="reviews">
       <div class="wrap">
-        <div class="reviews-head">
-          <h2>What our customers say</h2>
-          <div class="reviews-arrows">
-            <button type="button" class="rev-btn" id="rev-prev" aria-label="Previous reviews">
+        <h2>What our customers say</h2>
+
+        <div class="reviews-slider" role="region" aria-roledescription="carousel" aria-label="Customer reviews">
+          <div class="reviews-viewport">
+            <!-- Each <figure> below is one review. Put the NEWEST review first: only the first 4 are shown.
+                 Change the stars, the text and the name. 5 stars = ★★★★★   4 stars = ★★★★☆  (also change the number in aria-label).
+                 Have fewer than 4 reviews? Just delete the extra <figure> blocks. -->
+            <div class="reviews-track" id="reviews-track" aria-live="off">
+              <figure class="review">
+                <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+                <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+                <figcaption>Customer name <span>Google review</span></figcaption>
+              </figure>
+
+              <figure class="review">
+                <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+                <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+                <figcaption>Customer name <span>Google review</span></figcaption>
+              </figure>
+
+              <figure class="review">
+                <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+                <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+                <figcaption>Customer name <span>Google review</span></figcaption>
+              </figure>
+
+              <figure class="review">
+                <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
+                <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
+                <figcaption>Customer name <span>Google review</span></figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="reviews-controls">
+            <button type="button" class="rev-btn" id="rev-prev" aria-label="Previous review">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
             </button>
-            <button type="button" class="rev-btn" id="rev-next" aria-label="Next reviews">
+            <div class="rev-dots" id="rev-dots"></div>
+            <button type="button" class="rev-btn" id="rev-next" aria-label="Next review">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
             </button>
+            <button type="button" class="rev-btn rev-pause" id="rev-pause" aria-label="Pause automatic sliding">
+              <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+              <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </button>
           </div>
-        </div>
-
-        <!-- Each <figure> below is one review. To edit: change the stars, the text and the name.
-             5 stars = ★★★★★   4 stars = ★★★★☆   (also change the number in aria-label).
-             To add a review, copy a whole <figure> ... </figure> block. To remove one, delete it. -->
-        <div class="reviews-track" id="reviews-track" tabindex="0" role="region" aria-label="Customer reviews">
-          <figure class="review">
-            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
-            <blockquote>The snacks were very tasty and fresh. Kozhi ada was delivered from Kerela to Delhi but it was in perfect condition. I served it to my guests and everyone loved it. Must order.</blockquote>
-            <figcaption>Rumaisa Aleem <span>Google review</span></figcaption>
-          </figure>
-
-          <figure class="review">
-            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
-            <blockquote>Absolutely loved the snacks! It was fresh, tasty, and they were packed so carefully and reached all the way from Kerala to Delhi in perfect condition. Definitely worth it will be ordering again! ❤️.</blockquote>
-            <figcaption>konen qureshi <span>Google review</span></figcaption>
-          </figure>
-
-          <figure class="review">
-            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
-            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
-            <figcaption>Customer name <span>Google review</span></figcaption>
-          </figure>
-
-          <figure class="review">
-            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
-            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
-            <figcaption>Customer name <span>Google review</span></figcaption>
-          </figure>
-
-          <figure class="review">
-            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
-            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
-            <figcaption>Customer name <span>Google review</span></figcaption>
-          </figure>
-
-          <figure class="review">
-            <span class="review-stars" role="img" aria-label="5 out of 5 stars">★★★★★</span>
-            <blockquote>Paste the customer's review here, exactly as it appears on Google.</blockquote>
-            <figcaption>Customer name <span>Google review</span></figcaption>
-          </figure>
         </div>
 
         <p class="reviews-links">
@@ -553,27 +550,110 @@
 
     <script>
       (function () {
-        var track = document.getElementById('reviews-track');
-        var prev  = document.getElementById('rev-prev');
-        var next  = document.getElementById('rev-next');
-        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var INTERVAL    = 6000;   /* how long each review stays on screen, in milliseconds */
+        var MAX_REVIEWS = 4;      /* only the first 4 reviews are shown */
 
-        function step() {                       // width of one card plus the gap
-          var card = track.querySelector('.review');
-          var gap  = parseFloat(getComputedStyle(track).columnGap) || 0;
-          return card ? card.getBoundingClientRect().width + gap : track.clientWidth;
+        var section = document.getElementById('reviews');
+        var slider  = section.querySelector('.reviews-slider');
+        var track   = document.getElementById('reviews-track');
+        var slides  = Array.prototype.slice.call(track.querySelectorAll('.review'));
+
+        slides.slice(MAX_REVIEWS).forEach(function (s) { s.remove(); });
+        slides = slides.slice(0, MAX_REVIEWS);
+        var n = slides.length;
+        if (n === 0) { section.hidden = true; return; }          // no reviews: hide the whole section
+
+        slides.forEach(function (s, i) {
+          s.setAttribute('role', 'group');
+          s.setAttribute('aria-roledescription', 'slide');
+          s.setAttribute('aria-label', (i + 1) + ' of ' + n);
+        });
+        slider.classList.add('is-ready');
+        if (n === 1) { slider.classList.add('is-single'); return; }
+
+        var reduce   = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var DURATION = reduce ? 0 : 700;
+        var prevBtn  = document.getElementById('rev-prev');
+        var nextBtn  = document.getElementById('rev-next');
+        var pauseBtn = document.getElementById('rev-pause');
+        var dotsBox  = document.getElementById('rev-dots');
+        var dots = [], index = 0, step = 0, busy = false, timer = null;
+        var userPaused = reduce, hovered = false, focused = false, visible = true;
+
+        var clone = slides[0].cloneNode(true);                   // copy of the first review, so the loop never jumps
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
+
+        slides.forEach(function (s, i) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'rev-dot';
+          b.setAttribute('aria-label', 'Show review ' + (i + 1));
+          b.addEventListener('click', function () { manual(function () { goTo(i); }); });
+          dotsBox.appendChild(b);
+          dots.push(b);
+        });
+
+        function measure() {
+          var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+          step = slides[0].getBoundingClientRect().width + gap;
         }
-        function go(dir) { track.scrollBy({ left: dir * step(), behavior: reduce ? 'auto' : 'smooth' }); }
-        function sync() {                       // grey out an arrow when there is nothing more to show
-          prev.disabled = track.scrollLeft <= 2;
-          next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+        function place(i, animate) {
+          track.style.transition = (animate && !reduce) ? 'transform .7s ease' : 'none';
+          track.style.transform  = 'translateX(' + (-i * step) + 'px)';
+        }
+        function markDots() {
+          dots.forEach(function (d, i) {
+            if (i === index % n) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+          });
+        }
+        function lock(after) {
+          busy = true;
+          setTimeout(function () { if (after) after(); busy = false; }, DURATION + 30);
         }
 
-        prev.addEventListener('click', function () { go(-1); });
-        next.addEventListener('click', function () { go(1); });
-        track.addEventListener('scroll', sync, { passive: true });
-        window.addEventListener('resize', sync);
-        sync();
+        function next() {
+          if (busy) return;
+          index++;
+          place(index, true); markDots();
+          lock(index === n ? function () { index = 0; place(0, false); markDots(); } : null);
+        }
+        function prev() {
+          if (busy) return;
+          if (index === 0) { index = n; place(n, false); void track.offsetWidth; }   // jump to the copy, then slide back
+          index--;
+          place(index, true); markDots(); lock();
+        }
+        function goTo(i) {
+          if (busy) return;
+          index = i; place(i, true); markDots(); lock();
+        }
+
+        function sync() {                                         // start or stop the automatic sliding
+          clearInterval(timer); timer = null;
+          if (!userPaused && !hovered && !focused && visible && !document.hidden) timer = setInterval(next, INTERVAL);
+        }
+        function manual(fn) { fn(); sync(); }
+        function paintPause() {
+          pauseBtn.classList.toggle('is-paused', userPaused);
+          pauseBtn.setAttribute('aria-label', userPaused ? 'Start automatic sliding' : 'Pause automatic sliding');
+          track.setAttribute('aria-live', userPaused ? 'polite' : 'off');
+        }
+
+        prevBtn.addEventListener('click', function () { manual(prev); });
+        nextBtn.addEventListener('click', function () { manual(next); });
+        pauseBtn.addEventListener('click', function () { userPaused = !userPaused; paintPause(); sync(); });
+        slider.addEventListener('mouseenter', function () { hovered = true;  sync(); });   // pause while the mouse is over it
+        slider.addEventListener('mouseleave', function () { hovered = false; sync(); });
+        slider.addEventListener('focusin',    function () { focused = true;  sync(); });
+        slider.addEventListener('focusout',   function () { focused = false; sync(); });
+        document.addEventListener('visibilitychange', sync);
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(function (e) { visible = e[0].isIntersecting; sync(); }, { threshold: 0.3 }).observe(slider);
+        }
+        window.addEventListener('resize', function () { measure(); place(index, false); });
+
+        measure(); place(0, false); markDots(); paintPause(); sync();
       })();
     </script>
 <!-- CONTACT -->
