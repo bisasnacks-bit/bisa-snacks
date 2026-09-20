@@ -265,12 +265,117 @@
           <h2>Kozhiada</h2>
           <p>A Malabar snack, made to the original recipe.</p>
 
-<!-- TODO: fill in your real details, or delete this block. -->
-<dl class="facts">
-  <div><dt>Pack size</dt><dd>200 gm</dd></div>
-  <div><dt>Price</dt><dd>₹249</dd></div>
-</dl>
+<style>
+    /* Pack size, quantity and live price */
+    .picker { margin: 1.75rem 0 2rem; display: grid; gap: 1.5rem; max-width: 26rem; }
+    .picker fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .picker legend, .picker-label { display: block; font-weight: 600; padding: 0; margin-bottom: .6rem; }
 
+    .sizes { display: flex; flex-wrap: wrap; gap: .75rem; }
+    .sizes input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .sizes label {
+      min-width: 6.5rem; text-align: center;
+      padding: .7rem 1.4rem; border-radius: 999px;
+      border: 2px solid var(--red); font-weight: 600; cursor: pointer;
+      transition: background-color .15s, color .15s;
+    }
+    .sizes label:hover { background: rgba(138,43,43,.12); }
+    .sizes input:checked + label { background: var(--red); color: var(--cream); }
+    .sizes input:focus-visible + label { outline: 3px solid var(--red); outline-offset: 4px; }
+
+    .stepper { display: inline-flex; align-items: center; border: 2px solid var(--red); border-radius: 999px; overflow: hidden; }
+    .stepper button {
+      width: 3rem; height: 3rem; border: 0; background: transparent; color: var(--red);
+      font: inherit; font-size: 1.6rem; line-height: 1; cursor: pointer;
+    }
+    .stepper button:hover { background: rgba(138,43,43,.12); }
+    .stepper button:disabled { opacity: .35; cursor: not-allowed; background: transparent; }
+    .stepper button:focus-visible, .stepper input:focus-visible { outline: 3px solid var(--red); outline-offset: -6px; }
+    .stepper input {
+      width: 3.5rem; height: 3rem; border: 0; background: transparent; color: var(--red);
+      font: inherit; font-weight: 600; font-size: 1.15rem; text-align: center;
+      -moz-appearance: textfield; appearance: textfield;
+    }
+    .stepper input::-webkit-outer-spin-button,
+    .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .picker .total { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; margin-top: .25rem; }
+    .total-label { font-weight: 600; }
+    .total-amount { font-family: var(--display); font-weight: 700; font-size: var(--step-3); line-height: 1; }
+    .total-note { flex-basis: 100%; font-size: .95rem; }
+</style>
+
+          <!-- Pack size, quantity and live price.
+               To change prices: edit the data-price numbers below (in rupees).
+               To add a size: copy one input + label pair and change its id, value, price and text.
+               To change the most packs per order: edit max="20" on the quantity box. -->
+          <div class="picker">
+            <fieldset>
+              <legend>Pack size</legend>
+              <div class="sizes">
+                <input type="radio" name="size" id="size-200" value="200" data-price="249" checked>
+                <label for="size-200">200 g</label>
+                <input type="radio" name="size" id="size-400" value="400" data-price="479">
+                <label for="size-400">400 g</label>
+              </div>
+            </fieldset>
+
+            <div>
+              <label class="picker-label" for="qty">Quantity</label>
+              <div class="stepper">
+                <button type="button" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
+                <input type="number" id="qty" value="1" min="1" max="20" inputmode="numeric">
+                <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+
+            <p class="total" aria-live="polite">
+              <span class="total-label">Total</span>
+              <span class="total-amount" id="total">&#8377;249</span>
+              <span class="total-note" id="total-note">1 pack &times; &#8377;249 (200 g)</span>
+            </p>
+          </div>
+
+<script>
+    /* Pack size + quantity -> total price */
+    (function () {
+      var qty   = document.getElementById('qty');
+      var minus = document.getElementById('qty-minus');
+      var plus  = document.getElementById('qty-plus');
+      var total = document.getElementById('total');
+      var note  = document.getElementById('total-note');
+      var MIN = parseInt(qty.min, 10) || 1;
+      var MAX = parseInt(qty.max, 10) || 20;
+
+      function rupees(n) { return '\u20B9' + n.toLocaleString('en-IN'); }
+
+      function clamp(n) {
+        if (isNaN(n) || n < MIN) return MIN;
+        return n > MAX ? MAX : n;
+      }
+
+      function update(fixBox) {
+        var size  = document.querySelector('input[name="size"]:checked');
+        var price = Number(size.dataset.price);
+        var q     = clamp(parseInt(qty.value, 10));
+        if (fixBox) qty.value = q;             // tidy the box once typing is finished
+        total.textContent = rupees(price * q);
+        note.textContent  = q + (q === 1 ? ' pack' : ' packs') + ' \u00D7 ' + rupees(price) + ' (' + size.value + ' g)';
+        minus.disabled = q <= MIN;
+        plus.disabled  = q >= MAX;
+      }
+
+      minus.addEventListener('click', function () { qty.value = clamp(parseInt(qty.value, 10) - 1); update(true); });
+      plus.addEventListener('click',  function () { qty.value = clamp(parseInt(qty.value, 10) + 1); update(true); });
+      qty.addEventListener('input',  function () { update(false); });
+      qty.addEventListener('change', function () { update(true); });
+      document.querySelectorAll('input[name="size"]').forEach(function (r) {
+        r.addEventListener('change', function () { update(true); });
+      });
+
+      update(true);
+    })();
+</script>
 <a class="btn btn-primary" href="#order">Order Kozhiada</a>
         </div>
       </div>
