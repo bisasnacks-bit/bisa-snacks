@@ -179,6 +179,14 @@
       .btn { transition: none; }
     }
   </style>
+<style>
+    /* Frozen header: stays at the top while scrolling */
+    :root { --header-h: calc(clamp(4rem, 3rem + 4vw, 5.5rem) + 1.5rem); }   /* header height (logo + padding) */
+    html { scroll-padding-top: var(--header-h); }                             /* menu links stop below the header */
+    .site-header { position: sticky; top: 0; z-index: 30; box-shadow: 0 2px 12px rgba(0,0,0,.22); }
+    .skip { z-index: 40; }                                                    /* keep the "Skip to content" link above it */
+    @media (min-width: 900px) { .snack .snack-grid .photo { top: calc(var(--header-h) + 1.5rem); } }   /* product photo follows below the header */
+  </style>
 </head>
 
 <body>
