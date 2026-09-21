@@ -359,6 +359,7 @@
     <div class="price" aria-live="polite">
       <span class="price-amount" id="total">&#8377;249</span>
       <span class="price-note" id="total-note">1 pack of 200 gm</span>
+      <span class="price-note">*Excluding delivery charges</span>
     </div>
   </div>
 </div>
@@ -487,7 +488,7 @@
           'Pack size: ' + cur.size + ' gm',
           'Quantity: ' + cur.q + (cur.q === 1 ? ' pack' : ' packs'),
           'Price per pack: ' + rupees(cur.price),
-          'Total: ' + rupees(cur.sum),
+          'Total: ' + rupees(cur.sum) + ' (excluding delivery charges)',
           '',
           '*Delivery details*',
           'Name: ' + val('f-name'),
