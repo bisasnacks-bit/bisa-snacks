@@ -415,7 +415,58 @@
   <button type="submit" class="btn btn-primary order-submit">Order on WhatsApp</button>
   <p class="order-note" id="order-note" role="status">This opens WhatsApp with your order ready to send. Nothing is sent until you press send there.</p>
 </form>
+<style>
+    /* Price note: adds the * after the price */
+    .price-amount::after { content: "*"; font-size: .5em; vertical-align: super; margin-left: .1em; }
 
+    /* Trust icons under the order button */
+    .trust { list-style: none; margin: 1.75rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .9rem; }
+    .trust li {
+      position: relative; width: 3.25rem; height: 3.25rem; display: grid; place-items: center;
+      border: 2px solid var(--red); border-radius: 50%; color: var(--red); cursor: help;
+    }
+    .trust svg { width: 1.85rem; height: 1.85rem; }
+    .trust li:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
+    /* the small label that appears on hover, keyboard focus or tap */
+    .trust li::after {
+      content: attr(data-label); display: none; position: absolute; bottom: calc(100% + .6rem); left: 50%; transform: translateX(-50%);
+      padding: .3rem .75rem; border-radius: 8px; background: var(--red); color: var(--cream);
+      font-size: .85rem; font-weight: 600; white-space: nowrap; z-index: 2;
+    }
+    .trust li:first-child::after { left: 0; transform: none; }
+    .trust li:hover::after, .trust li:focus-visible::after, .trust li.tip::after { display: block; }
+</style>
+
+<ul class="trust" aria-label="Why customers trust BISA">
+  <li tabindex="0" data-label="FSSAI registered">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="FSSAI registered"><path d="M12 3l7 3v5.2c0 4.4-2.9 7.8-7 9.8-4.1-2-7-5.4-7-9.8V6l7-3z"/><path d="M8.7 12.1l2.3 2.3 4.4-4.7"/></svg>
+  </li>
+  <li tabindex="0" data-label="Carefully packed">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Carefully packed"><path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5v-9z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 12v9"/></svg>
+  </li>
+  <li tabindex="0" data-label="Pan-India delivery">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Pan-India delivery"><path d="M2.5 6.5h11V15h-11z"/><path d="M13.5 9.5h4.2l2.8 3V15h-7z"/><circle cx="7" cy="17.4" r="1.9"/><circle cx="17" cy="17.4" r="1.9"/></svg>
+  </li>
+  <li tabindex="0" data-label="100% halal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="100% halal"><path d="M20 14.6A8.6 8.6 0 1 1 9.4 4a6.9 6.9 0 0 0 10.6 10.6z"/><path d="M17.2 4.9l.62 1.65 1.76.08-1.38 1.09.47 1.7-1.47-.97-1.47.97.47-1.7-1.38-1.09 1.76-.08z" fill="currentColor" stroke="none"/></svg>
+  </li>
+</ul>
+
+<script>
+    /* On phones: tap an icon to see its label, tap again (or elsewhere) to hide it */
+    (function () {
+      var icons = document.querySelectorAll('.trust li');
+      icons.forEach(function (li) {
+        li.addEventListener('click', function () {
+          icons.forEach(function (o) { if (o !== li) o.classList.remove('tip'); });
+          li.classList.toggle('tip');
+        });
+      });
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.trust')) icons.forEach(function (o) { o.classList.remove('tip'); });
+      });
+    })();
+</script>
 <script>
     /* Pack size + quantity -> price, and the WhatsApp order form */
     (function () {
