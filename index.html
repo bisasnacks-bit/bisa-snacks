@@ -911,5 +911,80 @@
     });
   })();
 </script>
+  <style>
+  /* Phone menu: on small screens the menu links open from a button next to "Order" */
+  .nav-toggle { display: none; }
+  .nav-links { display: contents; }                     /* on bigger screens the links stay exactly where they were */
+  .contact-value { overflow-wrap: anywhere; }            /* very narrow phones: lets the long email address wrap instead of scrolling sideways */
+
+  @media (max-width: 640px) {
+    .site-header .wrap { position: relative; }
+    .site-header .nav { gap: .75rem; }
+    .nav-toggle {
+      display: grid; place-items: center; flex: none; width: 2.75rem; height: 2.75rem; padding: 0;
+      border: 2px solid rgba(241,230,178,.6); border-radius: 50%; background: transparent; color: var(--cream); cursor: pointer;
+    }
+    .nav-toggle:hover { background: rgba(241,230,178,.14); }
+    .nav-toggle:focus-visible { outline: 3px solid var(--cream); outline-offset: 3px; }
+    .nav-toggle svg { width: 1.4rem; height: 1.4rem; }
+    .nav-toggle .icon-close, .nav-toggle[aria-expanded="true"] .icon-open { display: none; }
+    .nav-toggle[aria-expanded="true"] .icon-close { display: block; }
+
+    .site-header .nav-links {
+      display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column;
+      padding: .5rem var(--pad) 1rem; background: var(--red);
+      border-top: 1px solid rgba(241,230,178,.25); box-shadow: 0 14px 24px rgba(0,0,0,.28);
+    }
+    .site-header .nav-links.open { display: flex; }
+    .site-header .nav-links a:not(.btn) {
+      display: block; padding: 1rem 0; font-size: 1.15rem; font-weight: 500; opacity: 1; text-decoration: none;
+      border-bottom: 1px solid rgba(241,230,178,.18);
+    }
+    .site-header .nav-links a:not(.btn):last-child { border-bottom: 0; }
+    .site-header .nav-links a[aria-current="page"] { color: var(--yellow); }
+  }
+</style>
+
+<script>
+  (function () {
+    var nav = document.querySelector('.site-header .nav');
+    if (!nav) return;
+    var links = Array.prototype.slice.call(nav.querySelectorAll('a:not(.btn)'));
+    if (!links.length) return;
+
+    var panel = document.createElement('div');            // the dropdown that holds the menu links
+    panel.className = 'nav-links';
+    panel.id = 'nav-links';
+    nav.insertBefore(panel, links[0]);
+    links.forEach(function (a) { panel.appendChild(a); });
+
+    var toggle = document.createElement('button');        // the menu button
+    toggle.type = 'button';
+    toggle.className = 'nav-toggle';
+    toggle.setAttribute('aria-label', 'Menu');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', 'nav-links');
+    toggle.innerHTML =
+      '<svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>' +
+      '<svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    nav.appendChild(toggle);
+
+    function setOpen(open) {
+      panel.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    toggle.addEventListener('click', function () {
+      var open = !panel.classList.contains('open');
+      setOpen(open);
+      if (open) links[0].focus();                       // keyboard users land on the first link
+    });
+    links.forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
+    document.addEventListener('click', function (e) { if (!e.target.closest('.site-header')) setOpen(false); });   // tap outside
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && panel.classList.contains('open')) { setOpen(false); toggle.focus(); }
+    });
+    window.matchMedia('(min-width: 641px)').addEventListener('change', function (e) { if (e.matches) setOpen(false); });
+  })();
+</script>
 </body>
 </html>
