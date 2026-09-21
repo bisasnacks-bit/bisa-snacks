@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kozhiada | BISA Snacks</title>
+  <meta name="description" content="A crispy, golden pocket from the Malabar coast of Kerala, with a bold, spiced chicken filling inside a thin, crunchy shell. Made the BISA way: no preservatives, no shortcuts.">
+  <meta property="og:title" content="Kozhiada | BISA Snacks">
+  <meta property="og:description" content="A crispy, golden pocket from the Malabar coast of Kerala, with a bold, spiced chicken filling inside a thin, crunchy shell.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#8A2B2B">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Titles font: Mearu Food (same as the home page) ---------- */
+    @font-face {
+      font-family: "Mearu Food";
+      src: local("Mearu Food"), local("MearuFood-Regular"),
+           url("MearuFood.woff2") format("woff2"),
+           url("MearuFood.woff") format("woff"),
+           url("MearuFood.ttf") format("truetype"),
+           url("MearuFood.otf") format("opentype");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ---------- Tokens ---------- */
+    :root {
+      --red:    #8A2B2B;   /* brand red */
+      --olive:  #7D622E;   /* brand green */
+      --yellow: #F6BE00;   /* brand yellow */
+      --cream:  #F1E6B2;   /* brand off-white */
+
+      --display: "Mearu Food", "Baloo 2", system-ui, sans-serif;   /* titles */
+      --body:    "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+      --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+      --step-1: clamp(1.25rem, 1.1rem + 0.7vw, 1.6rem);
+      --step-2: clamp(1.8rem, 1.4rem + 2vw, 3rem);
+      --step-3: clamp(2.2rem, 1.5rem + 3.5vw, 4.25rem);
+      --step-hero: clamp(3rem, 1.2rem + 8.5vw, 6.5rem);
+
+      --wrap: 72rem;
+      --pad: clamp(1.25rem, 4vw, 3rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--body);
+      font-size: var(--step-0);
+      line-height: 1.6;
+      color: var(--red);
+      background: var(--cream);
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; line-height: 1.05; text-wrap: balance; }
+    p { margin: 0; max-width: 62ch; }
+    a { color: inherit; }
+    a:focus-visible, .btn:focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+
+    .wrap { width: 100%; max-width: var(--wrap); margin-inline: auto; padding-inline: var(--pad); }
+
+    .skip {
+      position: absolute; left: 1rem; top: -4rem;
+      background: var(--yellow); color: var(--red);
+      padding: .6rem 1rem; border-radius: 4px; z-index: 10; font-weight: 600;
+    }
+    .skip:focus { top: 1rem; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-block; font-weight: 600; text-decoration: none;
+      padding: .85rem 1.6rem; border-radius: 999px; border: 2px solid transparent;
+      transition: background-color .15s, color .15s, border-color .15s;
+    }
+    .btn-primary { background: var(--yellow); color: var(--red); }
+    .btn-primary:hover { background: var(--cream); }
+    .btn-primary:focus-visible { outline-color: var(--cream); }
+    .btn-ghost { border-color: rgba(241,230,178,.6); color: var(--cream); }
+    .btn-ghost:hover { background: rgba(241,230,178,.14); border-color: var(--cream); }
+
+    /* ---------- Header (same as the home page) ---------- */
+    .site-header { background: var(--red); color: var(--cream); }
+    .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .75rem; }
+    .logo { display: block; line-height: 0; }
+    .logo img { height: clamp(4rem, 3rem + 4vw, 5.5rem); width: auto; }
+    .nav { display: flex; align-items: center; gap: 1.75rem; }
+    .nav a:not(.btn) { text-decoration: none; opacity: .9; }
+    .nav a:not(.btn):hover, .nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 5px; opacity: 1; }
+    .nav .btn { padding: .55rem 1.2rem; }
+    @media (max-width: 640px) { .nav a:not(.btn) { display: none; } }
+
+    /* ---------- Photo frame ---------- */
+    .photo {
+      position: relative; margin: 0; overflow: hidden;
+      background:
+        repeating-linear-gradient(45deg,  rgba(241,230,178,.10) 0 14px, transparent 14px 28px),
+        repeating-linear-gradient(-45deg, rgba(138,43,43,.22) 0 14px, transparent 14px 28px),
+        var(--olive);
+      color: var(--cream);
+      display: grid; place-items: center; text-align: center;
+    }
+    .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .photo span { padding: 1rem; font-size: .95rem; max-width: 18ch; }
+    .photo-wide { aspect-ratio: 4 / 3; border-radius: 20px; width: 100%; }
+
+    /* ---------- 1. Hero ---------- */
+    .p-hero { background: var(--red); color: var(--cream); padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3.5rem, 8vw, 7rem); }
+    .p-hero-grid { display: grid; gap: 3rem; align-items: center; }
+    @media (min-width: 900px) { .p-hero-grid { grid-template-columns: 1.25fr 1fr; } }
+    .p-hero h1 { font-size: var(--step-hero); color: var(--yellow); overflow-wrap: break-word; animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+    .lede { font-size: var(--step-1); line-height: 1.45; margin-top: 1.5rem; }
+    .chips { list-style: none; margin: 1.75rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
+    .chips li { padding: .4rem 1rem; border: 2px solid rgba(241,230,178,.55); border-radius: 999px; font-weight: 600; font-size: .95rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: 2.25rem; }
+    @keyframes rise { from { opacity: 0; transform: translateY(1.2rem); } to { opacity: 1; transform: none; } }
+
+    /* ---------- 2. How it is made ---------- */
+    .how { padding-block: clamp(3.5rem, 8vw, 7rem); }
+    .how-grid { display: grid; gap: 3rem; align-items: center; }
+    @media (min-width: 900px) { .how-grid { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+    .how h2 { font-size: var(--step-3); }
+    .how-text p { margin-top: 1.5rem; font-size: var(--step-1); line-height: 1.5; }
+    .ingredients-label { font-weight: 600; margin-bottom: .9rem; }
+    .ingredients { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .ingredients li {
+      display: grid; place-items: center; text-align: center; min-height: 6.5rem; padding: 1rem;
+      border-radius: 20px; font-family: var(--display); font-weight: 700; font-size: 1.5rem; line-height: 1.1;
+    }
+    .ingredients li:nth-child(1), .ingredients li:nth-child(4) { background: var(--yellow); color: var(--red); }
+    .ingredients li:nth-child(2), .ingredients li:nth-child(3) { background: var(--red); color: var(--cream); }
+    .dry-note { margin-top: 1.25rem; padding: 1rem 1.25rem; border-radius: 16px; background: var(--olive); color: var(--cream); font-weight: 600; }
+
+    /* ---------- 3. The promise ---------- */
+    .band {
+      background:
+        repeating-linear-gradient(45deg,  rgba(241,230,178,.06) 0 14px, transparent 14px 28px),
+        repeating-linear-gradient(-45deg, rgba(138,43,43,.14) 0 14px, transparent 14px 28px),
+        var(--olive);
+      color: var(--cream); text-align: center; padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    }
+    .band h2 { font-size: var(--step-3); color: var(--yellow); }
+    .band p { margin: 1.5rem auto 0; font-size: var(--step-1); line-height: 1.45; }
+
+    /* ---------- 4. Roots ---------- */
+    .roots { background: var(--yellow); color: var(--red); padding-block: clamp(3.5rem, 8vw, 7rem); }
+    .roots-grid { display: grid; gap: 2.5rem; align-items: center; }
+    @media (min-width: 900px) { .roots-grid { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+    .roots h2 { font-size: var(--step-3); }
+    .roots-lead { margin-top: 1.5rem; font-size: var(--step-1); line-height: 1.5; }
+    .roots blockquote { margin: 0; padding-left: 1.5rem; border-left: 6px solid var(--red); font-family: var(--display); font-weight: 700; font-size: var(--step-2); line-height: 1.15; }
+
+    /* ---------- 5. Call to action ---------- */
+    .cta { background: var(--red); color: var(--cream); padding-block: clamp(3.5rem, 8vw, 6rem); }
+    .cta h2 { font-size: var(--step-3); color: var(--yellow); }
+    .cta p { margin-top: 1.25rem; font-size: var(--step-1); line-height: 1.45; }
+
+    /* ---------- Footer (same as the home page) ---------- */
+    .site-footer { background: var(--red); color: var(--cream); border-top: 1px solid rgba(241,230,178,.3); font-size: .95rem; }
+    .footer-inner { width: 100%; max-width: var(--wrap); margin-inline: auto; padding: 2.75rem var(--pad) 1.75rem; }
+    .footer-top { display: grid; gap: 2.5rem; }
+    @media (min-width: 800px) { .footer-top { grid-template-columns: auto auto; justify-content: space-between; gap: 3.5rem; align-items: start; } }
+    .footer-logo { height: 6.5rem; width: auto; }
+    .footer-heading { font-size: 1.3rem; color: var(--yellow); margin-bottom: .75rem; }
+    .footer-address { font-style: normal; font-size: 1rem; line-height: 1.7; }
+    .footer-map { display: inline-block; margin-top: .75rem; font-weight: 600; text-underline-offset: 5px; }
+    .footer-bottom { max-width: none; text-align: center; margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(241,230,178,.25); font-size: .9rem; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .p-hero h1 { animation: none; }
+      .btn { transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="index.html">
+        <img src="logo.png" alt="BISA Snacks, home" width="1000" height="832">
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html#story">Our story</a>
+        <a href="kozhiada.html" aria-current="page">Kozhiada</a>
+        <a href="index.html#promise">Our promise</a>
+        <a href="index.html#contact">Contact</a>
+        <a class="btn btn-primary" href="index.html#kozhiada">Order</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- 1. HERO -->
+    <section class="p-hero">
+      <div class="wrap p-hero-grid">
+        <div>
+          <h1>Kozhiada</h1>
+          <p class="lede">A crispy, golden pocket from the Malabar coast of Kerala, with a bold, spiced chicken filling inside a thin, crunchy shell.</p>
+          <ul class="chips">
+            <li>Thin, crunchy shell</li>
+            <li>Spiced chicken filling</li>
+            <li>Crisp for days</li>
+          </ul>
+          <div class="actions">
+            <a class="btn btn-primary" href="index.html#kozhiada">Order Kozhiada</a>
+            <a class="btn btn-ghost" href="index.html#story">Read our story</a>
+          </div>
+        </div>
+
+        <!-- Uses the same kozhiada.jpg photo as the home page. -->
+        <figure class="photo photo-wide">
+          <span>Add a photo of your Kozhiada</span>
+          <img src="kozhiada.jpg" alt="A pack of BISA Kozhiada beside a broken Kozhiada showing its spiced filling" onerror="this.remove()">
+        </figure>
+      </div>
+    </section>
+
+    <!-- 2. HOW IT IS MADE -->
+    <section class="how">
+      <div class="wrap how-grid">
+        <div class="how-text">
+          <h2>Cooked slow, kept dry.</h2>
+          <p>At BISA, we make it the way it was always meant to be, cooked slow with onions, black pepper, fennel, and curry leaves, kept dry on purpose so it stays crisp for days.</p>
+        </div>
+
+        <div>
+          <p class="ingredients-label">Cooked slow with</p>
+          <ul class="ingredients">
+            <li>Onions</li>
+            <li>Black pepper</li>
+            <li>Fennel</li>
+            <li>Curry leaves</li>
+          </ul>
+          <p class="dry-note">Kept dry on purpose, so it stays crisp for days.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. THE PROMISE -->
+    <section class="band">
+      <div class="wrap">
+        <h2>No preservatives.<br>No shortcuts.</h2>
+        <p>Just the recipe passed down in our home for generations.</p>
+      </div>
+    </section>
+
+    <!-- 4. FROM TEA SHOPS TO SUITCASES -->
+    <section class="roots">
+      <div class="wrap roots-grid">
+        <div>
+          <h2>From tea shops to suitcases.</h2>
+          <p class="roots-lead">This is the snack Malabar tea shops have sold for decades, and the one Keralites moving abroad always pack for the journey.</p>
+        </div>
+        <blockquote>One bite and you'll get it: crunchy shell, punchy spice, a whole coastline of flavour folded in.</blockquote>
+      </div>
+    </section>
+
+    <!-- 5. CALL TO ACTION -->
+    <section class="cta">
+      <div class="wrap">
+        <h2>Taste it for yourself.</h2>
+        <p>Choose your pack size and place your order on WhatsApp.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="index.html#kozhiada">Order Kozhiada</a>
+          <a class="btn btn-ghost" href="index.html#contact">Contact us</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <img class="footer-logo" src="logo.png" alt="BISA Snacks. For my children." width="1000" height="832">
+
+        <div>
+          <h3 class="footer-heading">Find us</h3>
+          <address class="footer-address">
+            BISA Snacks<br>
+            Moorikuthi, Koothali PO<br>
+            Keralam 673532, India
+          </address>
+          <a class="footer-map" href="https://www.google.com/maps/search/?api=1&amp;query=BISA%20Snacks&amp;query_place_id=ChIJq5XPSDF9pjsRSVRfOaS9WjA" target="_blank" rel="noopener">View on Google Maps</a>
+        </div>
+      </div>
+
+      <p class="footer-bottom">&copy; <span id="year">2026</span> BISA Snacks. For my children.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
