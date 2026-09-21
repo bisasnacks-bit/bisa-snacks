@@ -274,6 +274,111 @@
       </div>
     </section>
 
+<!-- FAQ -->
+    <style>
+      .faq { padding-block: clamp(3.5rem, 8vw, 6rem); }
+      .faq h2 { font-size: var(--step-3); text-align: center; margin-bottom: 2.5rem; }
+      .faq-list { max-width: 48rem; margin-inline: auto; border-top: 1px solid rgba(138,43,43,.35); }
+      .faq details { border-bottom: 1px solid rgba(138,43,43,.35); }
+      .faq summary {
+        display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+        padding: 1.25rem 0; cursor: pointer; list-style: none;
+        font-weight: 600; font-size: clamp(1.05rem, 1rem + .4vw, 1.25rem); line-height: 1.35;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after {                       /* plus sign, becomes a minus when open */
+        content: ""; flex: none; width: 2rem; height: 2rem; border: 2px solid var(--red); border-radius: 50%;
+        background:
+          linear-gradient(var(--red), var(--red)) center / .85rem 2px no-repeat,
+          linear-gradient(var(--red), var(--red)) center / 2px .85rem no-repeat;
+      }
+      .faq details[open] summary::after { background: linear-gradient(var(--red), var(--red)) center / .85rem 2px no-repeat; }
+      .faq summary:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; border-radius: 8px; }
+      .faq-a { padding: 0 3.5rem 1.5rem 0; font-size: 1.05rem; line-height: 1.65; }
+      .faq-a p + p { margin-top: .9rem; }
+      .faq-a a { font-weight: 600; text-underline-offset: 4px; }
+    </style>
+
+    <section class="faq" id="faq">
+      <div class="wrap">
+        <h2>Frequently asked questions</h2>
+
+        <div class="faq-list">
+          <details name="faq" open>
+            <summary>What is Kozhiada?</summary>
+            <div class="faq-a">
+              <p>At BISA, we prepare Kozhiada the way it has always been meant to be made — slow-cooked with onions, black pepper, fennel, curry leaves, and special Malabar masalas. It is intentionally kept dry to retain its signature crispness for days.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>What ingredients are used?</summary>
+            <div class="faq-a">
+              <p>Our Kozhiada is made with onions, black pepper, fennel, curry leaves, and special Malabar masalas.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>Does BISA use preservatives?</summary>
+            <div class="faq-a">
+              <p>No. We do not add preservatives to artificially extend the shelf life of our Kozhiada.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>How long does BISA Kozhiada stay fresh?</summary>
+            <div class="faq-a">
+              <p>BISA Kozhiada stays fresh for up to 30 days when stored properly.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>How should I store my Kozhiada?</summary>
+            <div class="faq-a">
+              <p>Your Kozhiada comes with a permanent seal for freshness. To open the package, simply tear off the top section just above the temporary seal.</p>
+              <p>The temporary seal can then be used to reseal the package, helping protect your Kozhiada from moisture and air. For best results, we recommend transferring it to a dry, airtight jar and keeping it away from moisture.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>Do you deliver outside Kerala?</summary>
+            <div class="faq-a">
+              <p>Yes, we try to make BISA Kozhiada available across India, straight from our kitchen.</p>
+              <p>Delivery to your location depends on the availability of a delivery partner in your area. <a href="https://wa.me/918075565658?text=Hi%20BISA%2C%20I%27d%20like%20to%20check%20if%20delivery%20is%20available%20at%20PIN%20code%20" target="_blank" rel="noopener">Send us your PIN code</a> and we’ll let you know if delivery is available.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>How much does delivery cost?</summary>
+            <div class="faq-a">
+              <p>Delivery charges depend on the delivery address and are calculated accordingly.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>How long does delivery take?</summary>
+            <div class="faq-a">
+              <p>Delivery is generally expected within 4–5 days, although most of our packages reach customers within 2–3 days.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>Can I place a bulk order?</summary>
+            <div class="faq-a">
+              <p>Absolutely! BISA Kozhiada can be a delicious addition to your parties and gatherings.</p>
+              <p>We also offer discounted prices for bulk orders. Please <a href="https://wa.me/918075565658?text=Hi%20BISA%2C%20I%27d%20like%20to%20enquire%20about%20a%20bulk%20order." target="_blank" rel="noopener">reach out to us</a> for bulk-order enquiries.</p>
+            </div>
+          </details>
+
+          <details name="faq">
+            <summary>Can I order Kozhiada as a gift?</summary>
+            <div class="faq-a">
+              <p>Premium BISA Kozhiada gifting packages are coming soon. Stay tuned!</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
     <!-- 5. CALL TO ACTION -->
     <section class="cta">
       <div class="wrap">
